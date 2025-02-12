@@ -1,4 +1,4 @@
-package io.github.stockinventory.app.test.services;
+package io.github.stockinventory.app.teste.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

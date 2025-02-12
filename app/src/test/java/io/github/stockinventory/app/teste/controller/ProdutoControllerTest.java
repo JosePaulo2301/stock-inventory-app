@@ -1,4 +1,4 @@
-package io.github.stockinventory.app.test.controller;
+package io.github.stockinventory.app.teste.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,19 +22,16 @@ import io.github.stockinventory.app.services.ProdutoService;
 @AutoConfigureMockMvc
 public class ProdutoControllerTest {
 	
+	@Autowired
 	private MockMvc mockMvc;
+	@Autowired
 	private ProdutoService service;
-	
-	public ProdutoControllerTest(MockMvc mockMvc, ProdutoService service) {
-		this.mockMvc = mockMvc;
-		this.service = service;
-	}
-	
+		
     @Test
     void deveCriarProduto() throws Exception {
         String json = """
                 {
-                    "nome": "Cadeira Gamer",
+                    "name": "Cadeira Gamer",
                     "descricao": "Cadeira ergonômica",
                     "quantidade": 2,
                     "preco": 899.99
@@ -44,7 +42,7 @@ public class ProdutoControllerTest {
         				.contentType(MediaType.APPLICATION_JSON)
         				.content(json))
         		.andExpect(status().isOk())
-        		.andExpect(jsonPath("$.nome").value("Cadeira Gamer"));
+        		.andExpect(jsonPath("$.name").value("Cadeira Gamer"));
         		
     }
 
