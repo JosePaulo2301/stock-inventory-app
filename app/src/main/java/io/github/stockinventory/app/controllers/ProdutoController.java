@@ -24,7 +24,6 @@ public class ProdutoController {
         this.service = service;
     }
     
-
     @PostMapping
     public Produto criar(@RequestBody Produto produto) {
         return service.salvar(produto);
