@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import io.github.stockinventory.app.model.ProdutoRecord;
+import io.github.stockinventory.app.model.Produto;
 
 @Repository
-public interface ProdutoRepository extends JpaRepository<ProdutoRecord, Long>  {
-    Optional<ProdutoRecord> findByName (String name);   
+public interface ProdutoRepository extends JpaRepository<Produto, Long>  {
+    Optional<Produto> findByName (String name);   
 }
