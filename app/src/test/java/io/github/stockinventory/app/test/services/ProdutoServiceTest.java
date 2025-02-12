@@ -34,7 +34,7 @@ public class ProdutoServiceTest {
     	
     	ProdutoRecord salvo = service.salvar(produto);
     	assertNotNull(salvo);
-    	assertEquals("Teclado", salvo.name());
+    	assertEquals("Teclado", salvo.getName());
     		
     }
     
@@ -45,7 +45,7 @@ public class ProdutoServiceTest {
     	
     	Optional<ProdutoRecord> encontrado = service.buscarPorId(1L);
     	assertTrue(encontrado.isPresent());
-    	assertEquals("Mouse", encontrado.get().name());
+    	assertEquals("Mouse", encontrado.get().getName());
     }
     
     @Test
