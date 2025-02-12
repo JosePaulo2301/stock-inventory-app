@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.stockinventory.app.model.ProdutoRecord;
+import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.services.ProdutoService;
 
 @RestController
@@ -24,19 +24,18 @@ public class ProdutoController {
         this.service = service;
     }
     
-
     @PostMapping
-    public ProdutoRecord criar(@RequestBody ProdutoRecord produto) {
+    public Produto criar(@RequestBody Produto produto) {
         return service.salvar(produto);
     }
 
     @GetMapping
-    public List<ProdutoRecord> listar() {
+    public List<Produto> listar() {
         return service.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoRecord> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
