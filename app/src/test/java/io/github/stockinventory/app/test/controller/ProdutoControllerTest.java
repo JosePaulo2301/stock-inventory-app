@@ -1,16 +1,19 @@
 package io.github.stockinventory.app.test.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import io.github.stockinventory.app.model.ProdutoRecord;
 import io.github.stockinventory.app.services.ProdutoService;
 
 
@@ -18,13 +21,12 @@ import io.github.stockinventory.app.services.ProdutoService;
 @AutoConfigureMockMvc
 public class ProdutoControllerTest {
 	
-	@Autowired
 	private MockMvc mockMvc;
-	private ProdutoService sevice;
+	private ProdutoService service;
 	
-	public ProdutoControllerTest(MockMvc mockMvc, ProdutoService sevice) {
+	public ProdutoControllerTest(MockMvc mockMvc, ProdutoService service) {
 		this.mockMvc = mockMvc;
-		this.sevice = sevice;
+		this.service = service;
 	}
 	
     @Test
@@ -44,6 +46,19 @@ public class ProdutoControllerTest {
         		.andExpect(status().isOk())
         		.andExpect(jsonPath("$.nome").value("Cadeira Gamer"));
         		
+    }
+
+    void deveListarProdutos() throws Exception {
+        service.salvar(new ProdutoRecord(null,
+                                         "Monitor",
+                                         "Monitor 24 polegadas",
+                                         2,
+                                         new BigDecimal("600.00")));
+
+        mockMvc.perform(get("/produtos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
+    
     }
     
 

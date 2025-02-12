@@ -7,11 +7,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import lombok.*;
+
 @Entity
-public record ProdutoRecord(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id,
-    String name,
-    String descricao,
-    int quantidade,
-    BigDecimal preco
-) {}
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProdutoRecord {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String name;
+    private String descricao;
+    private int quantidade;
+    private BigDecimal preco;
+}
