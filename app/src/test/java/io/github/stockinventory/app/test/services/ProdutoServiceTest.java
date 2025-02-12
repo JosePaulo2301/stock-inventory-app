@@ -1,4 +1,4 @@
-package io.github.stockinventory.app.service;
+package io.github.stockinventory.app.test.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,7 +34,7 @@ public class ProdutoServiceTest {
     	
     	ProdutoRecord salvo = service.salvar(produto);
     	assertNotNull(salvo);
-    	assertEquals("Teclado", salvo.nome());
+    	assertEquals("Teclado", salvo.name());
     		
     }
     
@@ -45,7 +45,7 @@ public class ProdutoServiceTest {
     	
     	Optional<ProdutoRecord> encontrado = service.buscarPorId(1L);
     	assertTrue(encontrado.isPresent());
-    	assertEquals("Mouse", encontrado.get().nome());
+    	assertEquals("Mouse", encontrado.get().name());
     }
     
     @Test

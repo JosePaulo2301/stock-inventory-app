@@ -9,9 +9,8 @@ import jakarta.persistence.Id;
 
 @Entity
 public record ProdutoRecord(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    Long id,
-    String nome,
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id,
+    String name,
     String descricao,
     int quantidade,
     BigDecimal preco
