@@ -1,0 +1,7 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "editor.fontFamily": "Roboto Mono for Powerline",
+    "editor.fontSize": 16,
+    "terminal.integrated.fontFamily": "Hack",
+    "terminal.integrated.fontSize": 12 
+}
