@@ -9,5 +9,5 @@ import io.github.stockinventory.app.model.ProdutoRecord;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<ProdutoRecord, Long>  {
-    Optional<ProdutoRecord> findByName (String name);  
+    Optional<ProdutoRecord> findByName (String name);   
 }
