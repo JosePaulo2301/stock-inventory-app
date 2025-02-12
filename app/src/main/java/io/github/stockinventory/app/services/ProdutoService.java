@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import io.github.stockinventory.app.model.ProdutoRecord;
+import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.repository.ProdutoRepository; 
 
 @Service
@@ -17,15 +17,15 @@ public class ProdutoService {
         this.repository = repository;
     }
 
-    public ProdutoRecord salvar(ProdutoRecord produto) {
+    public Produto salvar(Produto produto) {
         return repository.save(produto);
     }
 
-    public List<ProdutoRecord> listarTodos() {
+    public List<Produto> listarTodos() {
         return repository.findAll();
     }
 
-    public Optional<ProdutoRecord> buscarPorId(Long id) {
+    public Optional<Produto> buscarPorId(Long id) {
         return repository.findById(id);
     }
 
