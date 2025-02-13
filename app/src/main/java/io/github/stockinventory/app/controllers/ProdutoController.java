@@ -2,6 +2,7 @@ package io.github.stockinventory.app.controllers;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,25 +20,31 @@ import io.github.stockinventory.app.services.ProdutoService;
 public class ProdutoController {
     
 	private final ProdutoService service;
-
+    
     public ProdutoController(ProdutoService service) {
         this.service = service;
     }
     
-    @PostMapping
-    public Produto criar(@RequestBody Produto produto) {
-        return service.salvar(produto);
-    }
-
-    @GetMapping
+    @GetMapping (produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public List<Produto> listar() {
         return service.listarTodos();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}",
+                produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping(
+        consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE},
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE}
+    )
+    public Produto criar(@RequestBody Produto produto) {
+        return service.salvar(produto);
+    }
+    
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.github.stockinventory.app.model.ProdutoRecord;
+import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.services.ProdutoService;
 
 
@@ -32,7 +32,7 @@ public class ProdutoControllerTest {
         String json = """
                 {
                     "name": "Cadeira Gamer",
-                    "descricao": "Cadeira ergonômica",
+                    "descricao": "Cadeira ergonômica", 
                     "quantidade": 2,
                     "preco": 899.99
                 }
@@ -47,7 +47,7 @@ public class ProdutoControllerTest {
     }
 
     void deveListarProdutos() throws Exception {
-        service.salvar(new ProdutoRecord(null,
+        service.salvar(new Produto(      null,
                                          "Monitor",
                                          "Monitor 24 polegadas",
                                          2,
@@ -58,6 +58,27 @@ public class ProdutoControllerTest {
                 .andExpect(jsonPath("$.length()").value(1));
     
     }
-    
+    /*
+
+    void deveAtualizarUmProduto() throws Exception {
+           String json = """
+                {   "id: 1,
+                    "name": "Cadeira Gamer",
+                    "descricao": "Cadeira ergonômica", 
+                    "quantidade": 2,
+                    "preco": 899.99
+                }
+                """;
+
+        mockMvc.perform(put("/produtos/{id}")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(json)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value(expe))
+        
+        );                
+        service.updateProductById(new ProdutoRecordDTO(1, "Mesa gamer", "Mesa de jogos", 5, new BigDecimal("500.00")))
+    }
+    */
 
 }
