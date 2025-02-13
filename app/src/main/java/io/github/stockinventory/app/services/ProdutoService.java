@@ -2,10 +2,13 @@ package io.github.stockinventory.app.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
 import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
+import io.github.stockinventory.app.mapper.MapperConverterClass;
 import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import io.github.stockinventory.app.repository.ProdutoRepository; 
@@ -23,8 +26,10 @@ public class ProdutoService {
         return repository.save(produto);
     }
 
-    public List<Produto> listarTodos() {
-        return repository.findAll();
+    public List<ProdutoRecordDTO> listarTodos() {
+        MapperConverterClass mapper = new MapperConverterClass();
+        List<Produto> protudos = repository.findAll();
+        return protudos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
     }
 
     public Optional<Produto> buscarPorId(Long id) {
