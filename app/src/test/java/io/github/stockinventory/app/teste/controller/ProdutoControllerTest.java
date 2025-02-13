@@ -2,6 +2,7 @@ package io.github.stockinventory.app.teste.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +47,7 @@ public class ProdutoControllerTest {
         		
     }
 
+    @Test
     void deveListarProdutos() throws Exception {
         service.salvar(new Produto(      null,
                                          "Monitor",
@@ -58,27 +60,26 @@ public class ProdutoControllerTest {
                 .andExpect(jsonPath("$.length()").value(1));
     
     }
-    /*
 
-    void deveAtualizarUmProduto() throws Exception {
-           String json = """
-                {   "id: 1,
-                    "name": "Cadeira Gamer",
-                    "descricao": "Cadeira ergonômica", 
-                    "quantidade": 2,
-                    "preco": 899.99
-                }
-                """;
+@Test
+void deveAtualizarUmProduto() throws Exception {
+    String json = """
+            {
+            "id": 1,
+            "name": "Cadeira Gamer",
+            "descricao": "Cadeira ergonômica",
+            "quantidade": 2,
+            "preco": 899.99
+             }
+            """;
 
-        mockMvc.perform(put("/produtos/{id}")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(json)
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value(expe))
-        
-        );                
-        service.updateProductById(new ProdutoRecordDTO(1, "Mesa gamer", "Mesa de jogos", 5, new BigDecimal("500.00")))
-    }
-    */
+    mockMvc.perform(put("/produtos/{id}", 1) // Passa o ID aqui
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json))
+           .andExpect(status().isOk()) 
+           .andExpect(jsonPath("$.id").value("1")); // Espera o valor correto
+}
+
+
 
 }
