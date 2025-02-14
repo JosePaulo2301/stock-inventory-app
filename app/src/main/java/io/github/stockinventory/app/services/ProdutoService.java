@@ -3,8 +3,6 @@ package io.github.stockinventory.app.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 
 import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
@@ -17,9 +15,11 @@ import io.github.stockinventory.app.repository.ProdutoRepository;
 public class ProdutoService {
 
     private final ProdutoRepository repository;
+    private final MapperConverterClass mapper;
 
-    public ProdutoService(ProdutoRepository repository) {
+    public ProdutoService(ProdutoRepository repository, MapperConverterClass converterClass) {
         this.repository = repository;
+        this.mapper = converterClass;
     }
 
     public Produto salvar(Produto produto) {
@@ -27,31 +27,27 @@ public class ProdutoService {
     }
 
     public List<ProdutoRecordDTO> listarTodos() {
-        MapperConverterClass mapper = new MapperConverterClass();
         List<Produto> protudos = repository.findAll();
         return protudos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
     }
 
-    public Optional<Produto> buscarPorId(Long id) {
-        return repository.findById(id);
+    public ProdutoRecordDTO buscarPorId(Long id) {
+        return repository
+        .findById(id)
+        .map(mapper::toProdutoRecordDTO)
+        .orElseThrow(() -> new ResourceNotFoundException("id não encontrado" + id));
     }
 
-    public void excluir(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("Id do produto não pode ser encontrado");
-        }
-        repository.deleteById(id);
-    }
     public Produto updateProductById(ProdutoRecordDTO dto) {
         if (dto.id() == null) {
             throw new IllegalArgumentException("Id do produto não pode ser encontrado");
         }
-
-
+        
+        
         Produto entity  = repository.findById(dto.id())
-                                    .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.id() + " não encontrado"));
-
-
+        .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.id() + " não encontrado"));
+        
+        
         boolean isUpdate = false;
         
         if (dto.descricao() != null && !dto.descricao().equals(entity.getDescricao())) {
@@ -71,6 +67,13 @@ public class ProdutoService {
         }
 
         return entity;
+    }
+
+    public void excluir(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id do produto não pode ser encontrado");
+        }
+        repository.deleteById(id);
     }
     
 }

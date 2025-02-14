@@ -2,7 +2,6 @@ package io.github.stockinventory.app.model;
 
 import java.math.BigDecimal;
 
-import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,12 +35,6 @@ public class Produto {
         this.preco = preco;
     }
 
-    public Produto(ProdutoRecordDTO dto) {
-        this.descricao = dto.descricao();
-        this.name = dto.name();
-        this.preco = dto.preco();
-        this.quantidade = dto.quantidade();
-    }
 
     public Long getId() {
         return id;
