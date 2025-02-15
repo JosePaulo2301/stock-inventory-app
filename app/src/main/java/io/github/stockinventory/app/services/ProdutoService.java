@@ -3,8 +3,8 @@ package io.github.stockinventory.app.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
@@ -17,23 +17,31 @@ import io.github.stockinventory.app.repository.ProdutoRepository;
 public class ProdutoService {
 
     private final ProdutoRepository repository;
+    private final MapperConverterClass converterClass;
 
-    public ProdutoService(ProdutoRepository repository) {
+    public ProdutoService(ProdutoRepository repository, MapperConverterClass  mapper) {
         this.repository = repository;
+        this.converterClass = mapper;
     }
 
-    public Produto salvar(Produto produto) {
-        return repository.save(produto);
+    public ProdutoRecordDTO salvar(ProdutoRecordDTO produtoRecordDTO) {
+        Produto produto = converterClass.toProduto(produtoRecordDTO);
+        Produto salvarProduto = repository.save(produto);
+        return converterClass.toProdutoRecordDTO(salvarProduto);
     }
 
     public List<ProdutoRecordDTO> listarTodos() {
-        MapperConverterClass mapper = new MapperConverterClass();
-        List<Produto> protudos = repository.findAll();
-        return protudos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
+        List<Produto> produtos = repository.findAll();
+        return produtos.stream().map(converterClass::toProdutoRecordDTO).collect(Collectors.toList());
     }
 
-    public Optional<Produto> buscarPorId(Long id) {
-        return repository.findById(id);
+    public ProdutoRecordDTO buscarPorId(Long id) {
+        Optional<Produto> produto = repository.findById(id);
+
+        return  produto.stream().   
+        
+        //produto.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
+
     }
 
     public void excluir(Long id) {
