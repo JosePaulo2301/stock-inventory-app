@@ -1,10 +1,8 @@
 package io.github.stockinventory.app.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
@@ -36,12 +34,10 @@ public class ProdutoService {
     }
 
     public ProdutoRecordDTO buscarPorId(Long id) {
-        Optional<Produto> produto = repository.findById(id);
-
-        return  produto.stream().   
+        return  repository.findById(id)
+                .map(converterClass::toProdutoRecordDTO)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + id));   
         
-        //produto.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
-
     }
 
     public void excluir(Long id) {

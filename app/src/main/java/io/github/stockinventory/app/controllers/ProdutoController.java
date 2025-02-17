@@ -34,15 +34,15 @@ public class ProdutoController {
 
     @GetMapping(value = "/{id}",
                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ProdutoRecordDTO buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
     }
 
     @PostMapping(
         consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE},
         produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE})
-    public Produto criar(@RequestBody Produto produto) {
-        return service.salvar(produto);
+    public ProdutoRecordDTO criar(@RequestBody ProdutoRecordDTO produtoRecordDTO) {
+        return service.salvar(produtoRecordDTO);
     }
 
     @PutMapping(value = "/{id}",

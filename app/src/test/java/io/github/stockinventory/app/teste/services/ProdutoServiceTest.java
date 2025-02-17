@@ -11,12 +11,18 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.repository.ProdutoRepository;
 import io.github.stockinventory.app.services.ProdutoService;
 
+@TestInstance(Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 public class ProdutoServiceTest {
     private ProdutoRepository repository;
     private ProdutoService service;
