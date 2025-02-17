@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.stockinventory.app.model.Produto;
+import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
 import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import io.github.stockinventory.app.services.ProdutoService;
 
@@ -48,17 +48,16 @@ public class ProdutoController {
     @PutMapping(value = "/{id}",
         consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE},
         produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_ATOM_XML_VALUE})
-    public ResponseEntity<Produto> updateProduct(@PathVariable Long id, @RequestBody ProdutoRecordDTO dto) {
+    public ProdutoRecordDTO updateProduct(@PathVariable Long id, @RequestBody ProdutoRecordDTO dto) {
         if (!id.equals(dto.id())) {
-            return ResponseEntity.badRequest().build();
+             throw new ResourceNotFoundException("Não encontrado");
         }
-        Produto update = service.updateProductById(dto);
-        return ResponseEntity.ok(update);
+        return service.updateProductById(dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<?> excluir(@PathVariable Long id) {
         service.excluir(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build(); 
     }
 }
