@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.github.stockinventory.app.model.Produto;
+import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import io.github.stockinventory.app.services.ProdutoService;
 
 
@@ -49,7 +49,7 @@ public class ProdutoControllerTest {
 
     @Test
     void deveListarProdutos() throws Exception {
-        service.salvar(new Produto(      null,
+        service.salvar(new ProdutoRecordDTO(      null,
                                          "Monitor",
                                          "Monitor 24 polegadas",
                                          2,

@@ -2,7 +2,6 @@ package io.github.stockinventory.app.services;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import io.github.stockinventory.app.exceptions.ResourceNotFoundException;
@@ -15,29 +14,46 @@ import io.github.stockinventory.app.repository.ProdutoRepository;
 public class ProdutoService {
 
     private final ProdutoRepository repository;
-    private final MapperConverterClass converterClass;
+    private final MapperConverterClass mapper;
 
-    public ProdutoService(ProdutoRepository repository, MapperConverterClass  mapper) {
+    public ProdutoService(ProdutoRepository repository, MapperConverterClass converterClass) {
         this.repository = repository;
-        this.converterClass = mapper;
+        this.mapper = converterClass;
     }
 
     public ProdutoRecordDTO salvar(ProdutoRecordDTO produtoRecordDTO) {
-        Produto produto = converterClass.toProduto(produtoRecordDTO);
+        Produto produto = mapper.toProduto(produtoRecordDTO);
         Produto salvarProduto = repository.save(produto);
-        return converterClass.toProdutoRecordDTO(salvarProduto);
+        return mapper.toProdutoRecordDTO(salvarProduto);
     }
 
     public List<ProdutoRecordDTO> listarTodos() {
-        List<Produto> produtos = repository.findAll();
-        return produtos.stream().map(converterClass::toProdutoRecordDTO).collect(Collectors.toList());
+        List<Produto> protudos = repository.findAll();
+        return protudos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
     }
 
     public ProdutoRecordDTO buscarPorId(Long id) {
-        return  repository.findById(id)
-                .map(converterClass::toProdutoRecordDTO)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado com o ID: " + id));   
+        Produto produto = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("id não encontrado" + id));
+        return mapper.toProdutoRecordDTO(produto);
+    }
+
+    public ProdutoRecordDTO updateProductById(ProdutoRecordDTO dto) {
+        if (dto.id() == null) {
+            throw new IllegalArgumentException("Id do produção não pode ser encontrado");
+        }
+        Produto entity = repository.findById(dto.id()).orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.id() + "Não encontrado"));
         
+        if (dto.descricao() != null && !dto.descricao().equals(entity.getDescricao())) {
+            entity.setDescricao(dto.descricao());
+        }
+        if (dto.name() != null && !dto.name().equals(entity.getName())) {
+            entity.setName(dto.name());
+        }
+        if (dto.preco() != null && !dto.preco().equals(entity.getPreco())) {
+            entity.setPreco(dto.preco());
+        }
+        Produto updatedEntity = repository.save(entity);
+        return mapper.toProdutoRecordDTO(updatedEntity);
     }
 
     public void excluir(Long id) {
@@ -45,36 +61,6 @@ public class ProdutoService {
             throw new IllegalArgumentException("Id do produto não pode ser encontrado");
         }
         repository.deleteById(id);
-    }
-    public Produto updateProductById(ProdutoRecordDTO dto) {
-        if (dto.id() == null) {
-            throw new IllegalArgumentException("Id do produto não pode ser encontrado");
-        }
-
-
-        Produto entity  = repository.findById(dto.id())
-                                    .orElseThrow(() -> new ResourceNotFoundException("Produto com ID " + dto.id() + " não encontrado"));
-
-
-        boolean isUpdate = false;
-        
-        if (dto.descricao() != null && !dto.descricao().equals(entity.getDescricao())) {
-            entity.setDescricao(dto.descricao());
-            isUpdate = true;
-        }
-        if (dto.name() != null && !dto.name().equals(entity.getName())) {
-            entity.setDescricao(dto.descricao());
-            isUpdate = true;
-        }
-        if (dto.preco() != null && !dto.preco().equals(entity.getPreco())) {
-            entity.setPreco(dto.preco());
-        }
-
-        if (isUpdate) {
-            return repository.save(entity);
-        }
-
-        return entity;
     }
     
 }
