@@ -16,9 +16,9 @@ public class ProdutoService {
     private final ProdutoRepository repository;
     private final MapperConverterClass mapper;
 
-    public ProdutoService(ProdutoRepository repository, MapperConverterClass converterClass) {
+    public ProdutoService(ProdutoRepository repository, MapperConverterClass mapper) {
         this.repository = repository;
-        this.mapper = converterClass;
+        this.mapper = mapper;
     }
 
     public ProdutoRecordDTO salvar(ProdutoRecordDTO produtoRecordDTO) {

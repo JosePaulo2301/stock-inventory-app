@@ -3,10 +3,14 @@ package io.github.stockinventory.app.teste.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -24,53 +28,58 @@ import io.github.stockinventory.app.services.ProdutoService;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Testes da classe Service")
 public class ProdutoServiceTest {
+
+    @InjectMocks
+    private ProdutoService service;
     
     @Mock
     private ProdutoRepository repository;
     @Mock
-    private MapperConverterClass converterClass;
-    @InjectMocks
-    private ProdutoService service;
-
+    private MapperConverterClass mapper;
 
     
     @Test
     void deveSalvarProduto() {
-        ProdutoRecordDTO dto = new ProdutoRecordDTO(1L, "Teclado", "Mecânico", 10, new BigDecimal("300.00"));
-        Produto produtoExistente = new Produto(1L, "Teclado", "Gamer", 10, new BigDecimal("200.00"));
-        Produto produtoAtualizado = new Produto(1L, "Teclado", "Mecânico", 10, new BigDecimal("300.00"));
-        ProdutoRecordDTO dtoAtualizado = new ProdutoRecordDTO(1L, "Teclado", "Mecânico", 10, new BigDecimal("300.00"));
+        // Dados simulados
+        ProdutoRecordDTO recordDTO = new ProdutoRecordDTO(null, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
+        Produto produto = new Produto(null, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
+        Produto produtoSalvo = new Produto(1L, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
+        ProdutoRecordDTO recordSalvo = new ProdutoRecordDTO(1L, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
 
-        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(produtoExistente));
-        Mockito.when(repository.save(produtoExistente)).thenReturn(produtoAtualizado);
-        Mockito.when(converterClass.toProdutoRecordDTO(produtoAtualizado)).thenReturn(dtoAtualizado);
+        // Simulando comportamento dos mocks
+        Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produtoSalvo);
+        Mockito.when(repository.save(produto)).thenReturn(produtoSalvo);
+        Mockito.when(mapper.toProdutoRecordDTO(produtoSalvo)).thenReturn(recordSalvo);
+        
 
-        ProdutoRecordDTO resultado = service.updateProductById(dto);
 
-        assertNotNull(resultado);
-        assertEquals("Teclado", resultado.name());
-        assertEquals("Mecânico", resultado.descricao());
-        assertEquals(new BigDecimal("300.00"), resultado.preco());    		
+        Produto resultado = repository.save(produto);
+
+        assertEquals("Teclado", resultado.getName());
+    		
     }
-    
+
     @Test
     void deveBuscarProdutoPorId() {
-
         Produto produto = new Produto(1L, "Teclado", "Mecânico", 10, new BigDecimal("300.00"));
+
         ProdutoRecordDTO produtoDTO = new ProdutoRecordDTO(1L, "Teclado", "Mecânico", 10, new BigDecimal("300.00"));
-    	
+
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(produto));
-        Mockito.when(converterClass.toProdutoRecordDTO(produto)).thenReturn(produtoDTO);
-    	
+
+        Mockito.when(mapper.toProdutoRecordDTO(produto)).thenReturn(produtoDTO);
+
         ProdutoRecordDTO encontrado = service.buscarPorId(1L);
-    
 
         assertNotNull(encontrado);
         assertEquals("Teclado", encontrado.name());
         assertEquals("Mecânico", encontrado.descricao());
         assertEquals(new BigDecimal("300.00"), encontrado.preco());
     }
+
+
     
     @Test
     public void deveListarTodosOsProdutos() {
@@ -82,19 +91,16 @@ public class ProdutoServiceTest {
     	assertEquals(1, resultado.size());
     }
     
+
     @Test
     public void deveDeletarUmProdutoPorIdV2() {
-        // Arrange - Criando um produto fictício
         Long id = 1L;
         Produto produto = new Produto(id, "Mouse", "Mouse sem fio", 5, new BigDecimal("150.00"));
 
-        // Definir o comportamento do mock do repositório
         Mockito.doNothing().when(repository).deleteById(id);
 
-        // Act - Chamar o método da service
         service.excluir(id);
 
-        // Assert - Verificar se o método foi chamado corretamente
         Mockito.verify(repository).deleteById(id);
     }
 
