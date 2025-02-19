@@ -2,7 +2,9 @@ package io.github.stockinventory.app.mapper;
 
 import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MapperConverterClass {
     // Convertendo PRoduto para ProdutoRecordDTO
     public ProdutoRecordDTO toProdutoRecordDTO (Produto produto) {

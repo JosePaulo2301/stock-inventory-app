@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 
+import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
+import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.services.ProdutoService;
 
 
@@ -32,7 +33,7 @@ public class ProdutoControllerTest {
     void deveCriarProduto() throws Exception {
         String json = """
                 {
-                    "name": "Cadeira Gamer",
+                    "name": "Cadeira Gamer",-
                     "descricao": "Cadeira ergonômica", 
                     "quantidade": 2,
                     "preco": 899.99
@@ -49,10 +50,10 @@ public class ProdutoControllerTest {
 
     @Test
     void deveListarProdutos() throws Exception {
-        service.salvar(new ProdutoRecordDTO(      null,
-                                         "Monitor",
-                                         "Monitor 24 polegadas",
-                                         2,
+        service.salvar(new ProdutoRecordDTO(null,
+                                            "Monitor",
+                                            "Monitor 24 polegadas",
+                                            2,
                                          new BigDecimal("600.00")));
 
         mockMvc.perform(get("/produtos"))
