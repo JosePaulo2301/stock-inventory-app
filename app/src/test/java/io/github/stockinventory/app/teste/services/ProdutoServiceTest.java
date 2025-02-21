@@ -1,8 +1,5 @@
 package io.github.stockinventory.app.teste.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +18,8 @@ import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.model.records.ProdutoRecordDTO;
 import io.github.stockinventory.app.repository.ProdutoRepository;
 import io.github.stockinventory.app.services.ProdutoService;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
@@ -75,11 +74,22 @@ public class ProdutoServiceTest {
     @Test
     public void deveListarTodosOsProdutos() {
     	List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
-    	Mockito.when(repository.findAll()).thenReturn(produtos);
-    	
-    	List<ProdutoRecordDTO> resultado = service.listarTodos();
-    	assertFalse(resultado.isEmpty());
-    	assertEquals(1, resultado.size());
+
+        List<ProdutoRecordDTO> produtosDTO = List.of(new ProdutoRecordDTO(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
+
+
+        Mockito.when(repository.findAll()).thenReturn(produtos);
+
+        Mockito.when(converterClass.toProdutoRecordDTO(Mockito.any(Produto.class))).thenReturn(produtosDTO.get(0));
+
+        List<ProdutoRecordDTO> resultado = service.listarTodos();
+
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals("Monitor", resultado.get(0).name());
+
+
+
     }
     
     @Test
