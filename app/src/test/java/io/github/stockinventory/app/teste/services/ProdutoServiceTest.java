@@ -50,15 +50,17 @@ public class ProdutoServiceTest {
 
         // Simulando comportamento dos mocks
         Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produtoSalvo);
-        Mockito.when(repository.save(produto)).thenReturn(produtoSalvo);
+        Mockito.when(repository.save(Mockito.any(Produto.class))).thenReturn(produtoSalvo);
         Mockito.when(mapper.toProdutoRecordDTO(produtoSalvo)).thenReturn(recordSalvo);
         
+        ProdutoRecordDTO produtoRecordDTO =  service.salvar(recordDTO);
+
+        assertEquals("Teclado" , produtoRecordDTO.name());
 
 
-        Produto resultado = repository.save(produto);
-
-        assertEquals("Teclado", resultado.getName());
-    		
+        Mockito.verify(mapper).toProduto(produtoRecordDTO);
+        Mockito.verify(repository).save(Mockito.any(Produto.class));
+        Mockito.verify(mapper).toProdutoRecordDTO(produtoSalvo);
     }
 
     @Test
@@ -84,11 +86,19 @@ public class ProdutoServiceTest {
     @Test
     public void deveListarTodosOsProdutos() {
     	List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
-    	Mockito.when(repository.findAll()).thenReturn(produtos);
-    	
-    	List<ProdutoRecordDTO> resultado = service.listarTodos();
-    	assertFalse(resultado.isEmpty());
-    	assertEquals(1, resultado.size());
+        List<ProdutoRecordDTO> dtos = List.of(new ProdutoRecordDTO(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
+
+
+        Mockito.when(repository.findAll()).thenReturn(produtos);
+
+        Mockito.when(mapper.toProdutoRecordDTO(Mockito.any(Produto.class))).thenReturn(dtos.get(0));
+
+        List<ProdutoRecordDTO> resultado = service.listarTodos();
+
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals("Monitor", resultado.get(0).name());
+
     }
     
 
