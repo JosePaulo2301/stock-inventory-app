@@ -60,7 +60,17 @@ public class ProdutoService {
         if (id == null) {
             throw new IllegalArgumentException("Id do produto não pode ser encontrado");
         }
+        
+        // Verifica se o produto realmente existe antes de deletar
+        boolean exists = repository.existsById(id);
+
+
+        if (!exists) {
+            throw new RuntimeException("Produto não encontrado para exclusão");
+        }
+
         repository.deleteById(id);
     }
+
     
 }
