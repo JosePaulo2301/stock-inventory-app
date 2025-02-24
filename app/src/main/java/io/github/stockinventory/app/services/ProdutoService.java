@@ -28,8 +28,8 @@ public class ProdutoService {
     }
 
     public List<ProdutoRecordDTO> listarTodos() {
-        List<Produto> protudos = repository.findAll();
-        return protudos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
+        List<Produto> produtos = repository.findAll();
+        return produtos.stream().map(mapper::toProdutoRecordDTO).collect(Collectors.toList());
     }
 
     public ProdutoRecordDTO buscarPorId(Long id) {
