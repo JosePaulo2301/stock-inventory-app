@@ -61,7 +61,6 @@ public class ProdutoService {
             throw new IllegalArgumentException("Id do produto não pode ser encontrado");
         }
         
-        // Verifica se o produto realmente existe antes de deletar
         boolean exists = repository.existsById(id);
 
 
