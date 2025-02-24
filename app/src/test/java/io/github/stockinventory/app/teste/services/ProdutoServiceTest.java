@@ -50,6 +50,7 @@ public class ProdutoServiceTest {
         ProdutoRecordDTO recordSalvo = new ProdutoRecordDTO(1L, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
 
         // Simulando comportamento dos mocks
+
         Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produto);
         Mockito.when(repository.save(Mockito.any(Produto.class))).thenReturn(produtoSalvo);
         Mockito.when(mapper.toProdutoRecordDTO(produtoSalvo)).thenReturn(recordSalvo);
@@ -64,6 +65,16 @@ public class ProdutoServiceTest {
         // Verificando se os mocks foram chamados corretamente
 
         Mockito.verify(mapper).toProduto(recordDTO);
+        Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produtoSalvo);
+        Mockito.when(repository.save(Mockito.any(Produto.class))).thenReturn(produtoSalvo);
+        Mockito.when(mapper.toProdutoRecordDTO(produtoSalvo)).thenReturn(recordSalvo);
+        
+        ProdutoRecordDTO produtoRecordDTO =  service.salvar(recordDTO);
+
+        assertEquals("Teclado" , produtoRecordDTO.name());
+
+
+        Mockito.verify(mapper).toProduto(produtoRecordDTO);
         Mockito.verify(repository).save(Mockito.any(Produto.class));
         Mockito.verify(mapper).toProdutoRecordDTO(produtoSalvo);
     }
@@ -90,6 +101,7 @@ public class ProdutoServiceTest {
 
     @Test
     public void deveListarTodosOsProdutos() {
+
 
         // Criando um produto com a entidade Produto e também ProdutoRecordDTO
         List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4, new BigDecimal("241.1")));
@@ -120,6 +132,21 @@ public class ProdutoServiceTest {
         // Verificando interações com os mocks
         Mockito.verify(repository).findAll();
         Mockito.verify(mapper, Mockito.times(produtos.size())).toProdutoRecordDTO(Mockito.any(Produto.class));
+
+    	List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
+        List<ProdutoRecordDTO> dtos = List.of(new ProdutoRecordDTO(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
+
+
+        Mockito.when(repository.findAll()).thenReturn(produtos);
+
+        Mockito.when(mapper.toProdutoRecordDTO(Mockito.any(Produto.class))).thenReturn(dtos.get(0));
+
+        List<ProdutoRecordDTO> resultado = service.listarTodos();
+
+        assertFalse(resultado.isEmpty());
+        assertEquals(1, resultado.size());
+        assertEquals("Monitor", resultado.get(0).name());
+
     }
 
 
