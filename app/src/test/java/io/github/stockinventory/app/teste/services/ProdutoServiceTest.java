@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,20 +44,28 @@ public class ProdutoServiceTest {
         // Dados simulados
         ProdutoRecordDTO recordDTO = new ProdutoRecordDTO(null, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
         Produto produto = new Produto(null, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
+
+
         Produto produtoSalvo = new Produto(1L, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
         ProdutoRecordDTO recordSalvo = new ProdutoRecordDTO(1L, "Teclado", "Teclado Mecânico", 10, new BigDecimal("200.00"));
 
         // Simulando comportamento dos mocks
-        Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produtoSalvo);
-        Mockito.when(repository.save(produto)).thenReturn(produtoSalvo);
+        Mockito.when(mapper.toProduto(recordDTO)).thenReturn(produto);
+        Mockito.when(repository.save(Mockito.any(Produto.class))).thenReturn(produtoSalvo);
         Mockito.when(mapper.toProdutoRecordDTO(produtoSalvo)).thenReturn(recordSalvo);
         
+        // Chamando o serviço para testar
+        ProdutoRecordDTO resultado = service.salvar(recordDTO);
+
+        // chacagens
+        assertEquals(recordSalvo, resultado);
 
 
-        Produto resultado = repository.save(produto);
+        // Verificando se os mocks foram chamados corretamente
 
-        assertEquals("Teclado", resultado.getName());
-    		
+        Mockito.verify(mapper).toProduto(recordDTO);
+        Mockito.verify(repository).save(Mockito.any(Produto.class));
+        Mockito.verify(mapper).toProdutoRecordDTO(produtoSalvo);
     }
 
     @Test
@@ -80,22 +87,46 @@ public class ProdutoServiceTest {
     }
 
 
-    
-    @Test
-    public void deveListarTodosOsProdutos() {
-    	List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4 , new BigDecimal("241.1")));
-    	Mockito.when(repository.findAll()).thenReturn(produtos);
-    	
-    	List<ProdutoRecordDTO> resultado = service.listarTodos();
-    	assertFalse(resultado.isEmpty());
-    	assertEquals(1, resultado.size());
-    }
-    
 
     @Test
-    public void deveDeletarUmProdutoPorIdV2() {
+    public void deveListarTodosOsProdutos() {
+
+        // Criando um produto com a entidade Produto e também ProdutoRecordDTO
+        List<Produto> produtos = List.of(new Produto(1L, "Monitor", "Monitor sem fio", 4, new BigDecimal("241.1")));
+        List<ProdutoRecordDTO> produtoDTO = List.of(new ProdutoRecordDTO(1L, "Monitor", "Monitor sem fio", 4, new BigDecimal("241.1")));
+
+        // Mockando a busca dos produtos
+        Mockito.when(repository.findAll()).thenReturn(produtos);
+
+        // Mockando a conversão da entidade para DTO, garantindo conversão correta para cada produto
+        Mockito.when(mapper.toProdutoRecordDTO(Mockito.any(Produto.class)))
+                .thenAnswer(invocation -> {
+                    Produto produto = invocation.getArgument(0);
+                    return new ProdutoRecordDTO(produto.getId(),
+                                produto.getName(),
+                                produto.getDescricao(),
+                                produto.getQuantidade(),
+                                produto.getPreco());
+                });
+
+        // Chamando o service
+        List<ProdutoRecordDTO> resultado = service.listarTodos();
+
+        // Verificações
+        //assertFalse(resultado.isEmpty(), "A lista de produtos não deveria estar vazia");
+        assertEquals(1, resultado.size(), "A lista deveria conter exatamente 1 produto");
+        assertEquals("Monitor", resultado.get(0).name());
+
+        // Verificando interações com os mocks
+        Mockito.verify(repository).findAll();
+        Mockito.verify(mapper, Mockito.times(produtos.size())).toProdutoRecordDTO(Mockito.any(Produto.class));
+    }
+
+
+    @Test
+    public void deveDeletarUmProdutoPorId() {
         Long id = 1L;
-        Produto produto = new Produto(id, "Mouse", "Mouse sem fio", 5, new BigDecimal("150.00"));
+        ProdutoRecordDTO produto = new ProdutoRecordDTO(id, "Mouse", "Mouse sem fio", 5, new BigDecimal("150.00"));
 
         Mockito.doNothing().when(repository).deleteById(id);
 
