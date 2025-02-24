@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.github.stockinventory.app.model.Produto;
 import io.github.stockinventory.app.services.ProdutoService;
 
 
